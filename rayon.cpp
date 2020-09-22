@@ -11,6 +11,7 @@ int main(void)
         pid_t pid;
         int fd[2];
         pipe(fd);
+        char readbuffer[60];
 
         if((pid = fork()) == -1)
         {
@@ -21,11 +22,14 @@ int main(void)
         if (pid == 0){
                 printf("\t1er Fils %d de pere %d\n",(int) getpid(), (int) getppid());
                 int surface = rayon*rayon*pi;
-                printf("Rayon = %d, Surface = %d\n",rayon, surface);
+                char string[] = "Rayon = \%d, Surface = \%d\n";//Simulation d'envoi données
+                close(fd[0]);
+                write(fd[1],string,(strlen(string)+1));
                 exit(0);
         }else{
                 printf("Pere %d de pere %d\n",(int) getpid(), (int) getppid());
-                
+                read(fd[0], readbuffer, sizeof(readbuffer));
+                printf("%s\n", readbuffer);
                 if((pid = fork()) == -1)
                 {
                         perror("fork");
@@ -35,8 +39,13 @@ int main(void)
                 if(pid == 0){
                         printf("\t2eme Fils %d de pere %d\n",(int) getpid(), (int) getppid());
                         int perimetre = 2*rayon*pi;
-                        printf("Rayon = %d, Perimetre = %d\n",rayon, perimetre);
+                        char string[] = "Rayon = \%d, Perimetre = \%d\n";//Simulation d'envoi données
+                        close(fd[0]);
+                        write(fd[1],string,(strlen(string)+1));
                         exit(0);
                 }
+                close(fd[1]);
+                read(fd[0], readbuffer, sizeof(readbuffer));
+                printf("%s\n", readbuffer);
         }
 }
