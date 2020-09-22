@@ -21,25 +21,24 @@ int main(void)
 
         if(childpid ==0 )
         {
-                printf("\t--Processus enfant %d \n");
-                printf("\t--Fermeture de la lecture sur le tube\n");
-                /* Child process closes up input side of pipe */
+                printf("\t--Processus enfant %d de pere %d\n",(int) getpid(), (int) getppid());
                 close(fd[0]);
+                printf("\t--Fermeture de la lecture sur le tube\n");
 
-                /* Send "string" through the output side of pipe */
-                write(fd[1], string, (strlen(string)+1));
+                nbytes = write(fd[1], string, (strlen(string)+1));
+                printf("\t--Le fils a ecrit %d octets\n",nbytes);
+
                 exit(0);
         }
         else
         {
-                printf("** Processus parent %d \n");
-                printf("** Fermeture de l'ecriture sur le tube\n");  
-                /* Parent process closes up output side of pipe */
+                printf("**Processus pere %d\n",(int) getpid());
                 close(fd[1]);
+                printf("**Fermeture de l'ecriture sur le tube\n");  
 
-                /* Read in a string from the pipe */
                 nbytes = read(fd[0], readbuffer, sizeof(readbuffer));
-                printf("Received string: %s", readbuffer);
+                printf("**Le pere a recu %d octets\n",nbytes);
+                printf("**String recu : %s\n", readbuffer);
         }
         
         return(0);
