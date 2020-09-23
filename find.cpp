@@ -6,33 +6,33 @@
 
 int main(int argc, char *argv[], char *envp[]) 
 { 
-   pid_t pid_eng; 
+   pid_t pid; 
    int statut; 
+   // Création du processus enfant 
+   pid = fork(); 
    if(argc < 2) 
    { 
          printf("Entrez une chaine a chercher par exemple : ./find chaine \n",argv[0]); 
          return 1; 
    } 
-   // Création du processus enfant 
-   pid_eng = fork(); 
-   if(pid_eng == -1) 
+   if(pid == -1) 
    { 
          perror("erreur de fork "); 
          return errno; 
    } 
-   if(pid_eng) 
+   if(pid) 
    { 
          //On est dans le parent 
-         printf("** Enfant créé  %d : - cherche chaine %s\n",pid_eng, argv[1]); 
+         printf("** Enfant créé  %d : - cherche chaine %s\n",pid, argv[1]); 
          for(int cpt = 0; cpt < argc; cpt++) 
          { 
                printf ("arg %i : %s\n", cpt,  argv[cpt]); 
          } 
          // On attend la terminaison du processus enfant 
-         pid_eng = wait(&statut); 
+         pid = wait(&statut); 
          // La macro WEXITSTATUS() permet d’isoler 
          // le code de terminaison envoyé par le processus enfant. 
-         printf("Statut retourné par %ld : %d\n",pid_eng, WEXITSTATUS(statut)); 
+         printf("Statut retourné par %ld : %d\n",pid, WEXITSTATUS(statut)); 
    } 
    else 
    { 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[], char *envp[])
          argv[0] = "grep"; 
          // argv[1] est la chaine a rechercher on conserve
         // on ajoute un argument avec le fichier cible de la recherche
-        argv[argc] = "english.txt";
+        argv[argc] = "eng.txt";
 
          // Le dernier élément du tableau doit être NULL 
          argv[argc+1] = (char *)NULL;  

@@ -38,17 +38,20 @@ int main(int argc, char *argv[], char *envp[]){
             if (pid == 0){
 		        	printf("\t1er Fils %d de pere %d\n",(int) getpid(), (int) getppid());
 		        	chercher(argc,argv,envp);
+		        	exit(0);
 		        }
 	        	pid = fork();
 	        	if(pid == 0){
 			        printf("\t2eme Fils %d de pere %d\n",(int) getpid(), (int) getppid());
 			        chercher(argc,argv,envp);
+			        exit(0);
 			    }
 
                 pid = fork();
                 if(pid == 0){
-                        printf("\t3eme Fils %d de pere %d\n",(int) getpid(), (int) getppid());
-                        chercher(argc,argv,envp);  
+                    printf("\t3eme Fils %d de pere %d\n",(int) getpid(), (int) getppid());
+                    chercher(argc,argv,envp);
+                    exit(0);  
                 }
 
 	            pid = fork();
@@ -57,18 +60,17 @@ int main(int argc, char *argv[], char *envp[]){
 			        chercher(argc,argv,envp);
 					exit(0);
 				}else{
-                printf("Pere %d de pere %d\n",(int) getpid(), (int) getppid());
-
-		                //On est dans le parent 
-				         printf("** Enfant créé  %d : - cherche chaine %s\n",pid, argv[1]); 
-				         for(int cpt = 0; cpt < argc; cpt++) 
-				         { 
-				               printf ("arg %i : %s\n", cpt,  argv[cpt]); 
-				         } 
-				         // On attend la terminaison du processus enfant 
-				         pid = wait(&statut); 
-				         // La macro WEXITSTATUS() permet d’isoler 
-				         // le code de terminaison envoyé par le processus enfant. 
-				         printf("Statut retourné par %ld : %d\n",pid, WEXITSTATUS(statut));
+		            printf("Pere %d de pere %d\n",(int) getpid(), (int) getppid());
+					//On est dans le parent 
+			        printf("** Enfant créé  %d : - cherche chaine %s\n",pid, argv[1]); 
+			        for(int cpt = 0; cpt < argc; cpt++) 
+			        { 
+			              printf ("arg %i : %s\n", cpt,  argv[cpt]); 
+			        } 
+			        // On attend la terminaison du processus enfant 
+			        pid = wait(&statut); 
+			        // La macro WEXITSTATUS() permet d’isoler 
+			        // le code de terminaison envoyé par le processus enfant. 
+			        printf("Statut retourné par %ld : %d\n",pid, WEXITSTATUS(statut));
         }
 }
